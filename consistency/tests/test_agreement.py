@@ -1,4 +1,5 @@
 from consistency import agreement
+from consistency import alpha_agreement
 from consistency.items import item
 
 
@@ -21,5 +22,43 @@ def test_agreement_1():
                                       item(350, 100, 0)]
     text_lenght = 300
 
-    assert agreement.agreement(fulldata['class_0'], text_lenght) == (0.0144, 0.0532, 0.7286)
-    assert agreement.agreement(fulldata['class_1'], text_lenght) == (0.0, 0.049, 1.0)
+    assert alpha_agreement(fulldata['class_0'], text_lenght) == (0.0144, 0.0532, 0.7286)
+    assert alpha_agreement(fulldata['class_1'], text_lenght) == (0.0, 0.049, 1.0)
+
+
+def test_agreement_2():
+    fulldata = {'LOC': {'coder_1': [item(b=0, l=9, v=0)],
+                        'coder_2': [item(b=0, l=9, v=0)],
+                        'coder_3': [item(b=0, l=9, v=0)]},
+                'MISC': {'coder_1': [item(b=0, l=2, v=0),
+                                     item(b=2, l=1, v=1),
+                                     item(b=3, l=3, v=0),
+                                     item(b=6, l=1, v=1),
+                                     item(b=7, l=2, v=0)],
+                         'coder_2': [item(b=0, l=1, v=1),
+                                     item(b=1, l=1, v=0),
+                                     item(b=2, l=1, v=1),
+                                     item(b=3, l=3, v=0),
+                                     item(b=6, l=1, v=1),
+                                     item(b=7, l=2, v=0)],
+                         'coder_3': [item(b=0, l=6, v=0),
+                                     item(b=6, l=1, v=1),
+                                     item(b=7, l=2, v=0)]},
+                'ORG': {'coder_1': [item(b=0, l=1, v=1),
+                                    item(b=1, l=8, v=0)],
+                        'coder_2': [item(b=0, l=9, v=0)],
+                        'coder_3': [item(b=0, l=1, v=1),
+                                    item(b=1, l=8, v=0)]},
+                'PER': {'coder_1': [item(b=0, l=9, v=0)],
+                        'coder_2': [item(b=0, l=9, v=0)],
+                        'coder_3': [item(b=0, l=9, v=0)]}}
+    text_lenght = 9
+
+    test_result = {'LOC': (0, 0, 0),
+                   'MISC': (0.0165, 0.0399, 0.5873),
+                   'ORG': (0.0082, 0.0158, 0.48),
+                   'PER': (0, 0, 0)}
+
+    for key, items in fulldata.items():
+        assert alpha_agreement(items, text_lenght) == test_result[key]
+

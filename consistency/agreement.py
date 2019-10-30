@@ -1,14 +1,17 @@
 def delta(item1, item2):
-    if ((item1.v == 1 and item2.v == 1) and
-            (item1.b - item2.b) > (-item1.l) and (item1.b - item2.b) < (item2.l)):
+    """
+    compute disagreement between 2 items
+    :param item1: item in format (begin position, length, class type(0-default, 1-annotated))
+    :param item2: item in format (begin position, length, class type(0-default, 1-annotated))
+    :return: disagreement between 2 items
+    """
+    if item1.v and item2.v and item1.b - item2.b > -item1.l and item1.b - item2.b < item2.l:
         return (item1.b - item2.b) ** 2 + (item1.b + item1.l - item2.b - item2.l) ** 2
 
-    elif ((item1.v == 1 and item2.v == 0) and
-          (item1.b - item2.b) >= 0 and (item2.l - item1.l) >= (item1.b - item2.b)):
+    elif item1.v and not item2.v and item1.b - item2.b >= 0 and item2.l - item1.l >= item1.b - item2.b:
         return item1.l ** 2
 
-    elif ((item1.v == 0 and item2.v == 1) and
-          (item1.b - item2.b) <= 0 and (item2.l - item1.l) <= (item1.b - item2.b)):
+    elif not item1.v and item2.v and item1.b - item2.b <= 0 and item2.l - item1.l <= item1.b - item2.b:
         return item2.l ** 2
 
     else:
@@ -16,6 +19,12 @@ def delta(item1, item2):
 
 
 def observed_disagreement(class_data, text_length):
+    """
+    :param class_data: for each annotation tag type for each coder includes list of texts positions that
+    are marked(1) and are not marked(0).
+    :param text_length: length of the text
+    :return: observed disagreement for Krippendorff’s Alpha agreement metric
+    """
     # get names of coders and number of coders
     coders = list(class_data.keys())
     n_c = len(coders)
@@ -36,6 +45,13 @@ def observed_disagreement(class_data, text_length):
 
 
 def expected_disagreement(class_data, class_num, text_length):
+    """
+    :param class_data: for each annotation tag type for each coder includes list of texts positions that
+    are marked(1) and are not marked(0).
+    :param class_num: number of items in class found by all coders
+    :param text_length: length of the text
+    :return: expected disagreement for Krippendorff’s Alpha agreement metric
+    """
     # get names of coders and number of coders
     coders = list(class_data.keys())
     n_c = len(coders)
@@ -65,14 +81,24 @@ def expected_disagreement(class_data, class_num, text_length):
     return disagreement
 
 
-def agreement(data, text_lenght):
+def alpha_agreement(data, text_length):
+    """
+    Compute and return observed disagreement, expected disagreement and Krippendorff’s Alpha agreement
+    :param data: for each annotation tag type for each coder includes list of texts positions that
+    are marked(1) and are not marked(0).
+    example of texts positions: [item(150, 75, 0), item(225, 70, 1), item(295, 75, 0)]
+    full data example in tests/test_agreement.py
+    :param text_length: length of the text
+    :return: observed disagreement, expected disagreement and Krippendorff’s Alpha agreement
+    """
     # get observed_disagreement
-    d_o = observed_disagreement(data, text_lenght)
+    d_o = observed_disagreement(data, text_length)
 
+    # get expected_disagreement
     class_sum = 0
     for _, items in data.items():
         class_sum += sum([1 for i in items if i.v == 1])
-    d_e = expected_disagreement(data, class_sum, text_lenght)
+    d_e = expected_disagreement(data, class_sum, text_length)
 
     return round(d_o, 4), round(d_e, 4), round(1 - d_o / d_e if d_e else 0, 4)
 

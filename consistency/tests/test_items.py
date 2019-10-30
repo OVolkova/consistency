@@ -1,17 +1,16 @@
-from consistency import agreement
-from consistency import items
-from consistency.items import item
+from consistency.items import item, text_tags, iob
+from consistency import get_items_from_iob2
 
 
 def test_on_conll_sample_1():
-    tag_tags = items.text_tags({'MISC', 'LOC', 'PER', 'ORG'}, items.iob('B', 'I'), 'O')
+    tag_tags = text_tags({'MISC', 'LOC', 'PER', 'ORG'}, iob('B', 'I'), 'O')
 
     sample = (['EU', 'rejects', 'German', 'call', 'to', 'boycott', 'British', 'lamb', '.'],
               ['B-ORG', 'O', 'B-MISC', 'O', 'O', 'O', 'B-MISC', 'O', 'O'],
               ['B-MISC', 'O', 'B-MISC', 'O', 'O', 'O', 'B-MISC', 'O', 'O'],
               ['B-ORG', 'O', 'O', 'O', 'O', 'O', 'B-MISC', 'O', 'O'])
 
-    data = items.get_items_from_iob(sample, tag_tags)
+    data = get_items_from_iob2(sample, tag_tags)
 
     test = {'LOC': {'coder_1': [item(b=0, l=9, v=0)],
                     'coder_2': [item(b=0, l=9, v=0)],
@@ -43,7 +42,7 @@ def test_on_conll_sample_1():
 
 
 def test_on_conll_sample_2():
-    tag_tags = items.text_tags({'MISC', 'LOC', 'PER', 'ORG'}, items.iob('B', 'I'), 'O')
+    tag_tags = text_tags({'MISC', 'LOC', 'PER', 'ORG'}, iob('B', 'I'), 'O')
 
     sample = (['Germany', "'s", 'representative', 'to', 'the', 'European', 'Union', "'s", 'veterinary', 'committee',
                'Werner', 'Zwingmann', 'said', 'on', 'Wednesday', 'consumers', 'should', 'buy', 'sheepmeat', 'from',
@@ -58,7 +57,7 @@ def test_on_conll_sample_2():
                'B-PER', 'I-PER', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O',
                'O', 'O', 'O', 'B-LOC', 'O', 'O', 'O', 'O', 'O', 'O', 'O'])
 
-    data = items.get_items_from_iob(sample, tag_tags)
+    data = get_items_from_iob2(sample, tag_tags)
 
     test = {'LOC': {'coder_1': [item(b=0, l=2, v=1),
                                 item(b=2, l=21, v=0),
