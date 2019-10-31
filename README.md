@@ -53,10 +53,11 @@ There are two main functions:
 
 Krippendorff’s Alpha by classes:
 ```
-LOC (0.0018, 0.0251, 0.9264)
-MISC (0.0, 0.0, 0)
-ORG (0.0018, 0.0441, 0.9582)
-PER (0.0, 0.0325, 1.0)
+	    observed disagreement	expected disagreement	Alpha agreement
+MISC	0.0000	                0.0000	                0.0000
+LOC	    0.0007	                0.0057	                0.8790
+PER	    0.0000	                0.0074	                1.0000
+ORG	    0.0007	                0.0101	                0.9311
 ```
 
-Interpretation of values could be found in Artstein, Ron, and Massimo Poesio∗. “Inter-Coder Agreement for Computational Linguistics.” Association for Computational Linguistics, vol. 34, no. 4, pp. 555–596.
+Interpretation of values could be found in Artstein, Ron, and Massimo Poesio. “Inter-Coder Agreement for Computational Linguistics.” Association for Computational Linguistics, vol. 34, no. 4, pp. 555–596.
